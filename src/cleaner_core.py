@@ -46,13 +46,13 @@ def _targets():
     if IS_WIN:
         t += [
             CleanTarget("user_temp", "用户临时文件", "当前用户 TEMP 目录，程序运行残留，公认安全",
-                        [tmp], risk="低"),
+                        paths=[tmp], risk="低"),
             CleanTarget("sys_temp", "系统临时文件", "Windows\\Temp，系统更新/安装残留",
-                        [os.path.join(win, "Temp")], risk="低"),
+                        paths=[os.path.join(win, "Temp")], risk="低"),
             CleanTarget("prefetch", "预读取缓存", "Windows\\Prefetch，可安全清空，系统会自动重建",
-                        [os.path.join(win, "Prefetch")], risk="低"),
+                        paths=[os.path.join(win, "Prefetch")], risk="低"),
             CleanTarget("thumb", "缩略图缓存", "资源管理器缩略图缓存，清掉后首次打开文件夹稍慢",
-                        [os.path.join(locals_low, "Microsoft", "Windows", "Explorer")],
+                        paths=[os.path.join(locals_low, "Microsoft", "Windows", "Explorer")],
                         patterns=["thumbcache_*.db"], risk="低"),
             CleanTarget("dxcache", "DirectX 着色器缓存",
                         desc="游戏/图形程序着色器缓存，清掉后首次启动稍慢",
@@ -60,8 +60,9 @@ def _targets():
             CleanTarget("win_update_dl", "Windows 更新下载缓存",
                         desc="已装更新的安装包残留，清掉后不影响已装更新",
                         paths=[os.path.join(win, "SoftwareDistribution", "Download")], risk="中"),
-            CleanTarget("recycle_bin", "回收站", "清空回收站（删除前请确认里面没有要找回的文件）",
-                        ["$Recycle.Bin"], risk="中", desc="见上"),
+            CleanTarget("recycle_bin", "回收站",
+                        desc="清空回收站（删除前请确认里面没有要找回的文件）",
+                        paths=["$Recycle.Bin"], risk="中"),
             CleanTarget("crashdump", "崩溃转储与内存转储",
                         desc="程序崩溃记录，排查过问题就没用了",
                         paths=[os.path.join(locals_low, "CrashDumps"), os.path.join(win, "Minidump"),
@@ -76,10 +77,10 @@ def _targets():
             ("Chrome", os.path.join(locals_low, "Google", "Chrome", "User Data")),
         ]:
             t.append(CleanTarget(f"{brand.lower()}_cache", f"{brand} 浏览器缓存",
-                                 f"网页缓存图片与脚本，不碰书签/密码/历史记录",
-                                 [os.path.join(sub, "*", "Cache"),
-                                  os.path.join(sub, "*", "Code Cache"),
-                                  os.path.join(sub, "*", "GPUCache")],
+                                 "网页缓存图片与脚本，不碰书签/密码/历史记录",
+                                 paths=[os.path.join(sub, "*", "Cache"),
+                                        os.path.join(sub, "*", "Code Cache"),
+                                        os.path.join(sub, "*", "GPUCache")],
                                  patterns=["*"], risk="低"))
     else:
         # 非 Windows（开发自测）：/tmp 与用户缓存
